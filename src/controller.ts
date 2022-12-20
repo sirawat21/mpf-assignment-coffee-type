@@ -39,7 +39,7 @@ router.post('/ratings', (req: Request, res: Response): void => {
 /* [GET] TASK 2  - Endpoint to list rated coffee types */
 router.get('/ratings/coffee-types', (req: Request, res: Response) => {
    // Get unique object of RatedCoffeeType
-   const uniqueModelOfRatedCoffeeType = [... new Set(model)];
+   const uniqueModelOfRatedCoffeeType = [... new Set(model)]; // fix
 
    res.status(200).send(uniqueModelOfRatedCoffeeType);
 });
@@ -59,7 +59,7 @@ router.get('/ratings', (req: Request, res: Response) => {
          // Set response message
          responseMessage.code = 200;
          // Set spone message detail for not rating yet; coffeeType is from query param
-         const detailResponseMessage = {...previousRatedCoffeeType};
+         const detailResponseMessage = { ...previousRatedCoffeeType };
          responseMessage.message = JSON.stringify(detailResponseMessage);
       }
    } else {
@@ -74,7 +74,34 @@ router.get('/ratings', (req: Request, res: Response) => {
 
 /* [GET] TASK 4 - Endpoint to recommend a coffee type for today */
 router.get('/recommendation', (req: Request, res: Response) => {
-   res.status(200).send('');
+   // Set inital response
+   let responseMessage = { code: 200, message: '' };
+
+   // Get the most recent coffee type with 4+ star
+   const recentCoffeeTypeWithAcceptedRate = model.reverse().map((coffeeTypeObj) => {
+      // Make copy coffee type object for yielding
+      const yieldObj = coffeeTypeObj;
+      // Check rating must be in between 4 to 5 star
+      const [min, max] = coffeeTypeObj.starRating.split('/');
+      // Yield coffee type that has 4 star up
+      if (Number(min) > 3) return yieldObj;
+   });
+   // Get the recommend lists; by finding the most star for each coffee type
+   const recommend = recentCoffeeTypeWithAcceptedRate.map((coffeeTypeObj) => {
+      // Set a list note that obj alread added for recommening
+      const recommendCoffeeTypeList: RatedCoffeeType[] = [];
+
+   });
+
+
+   if (recommend.length > 0) {
+
+   } else {
+      // When doesn't have any recommendation
+      const detailResponseMessage = { message: 'NO_RECOMMENDATIONS_AVAILABLE' };
+      responseMessage.message = JSON.stringify(detailResponseMessage);
+   }
+   res.status(responseMessage.code).send(responseMessage.message);
 });
 
 export default router;
