@@ -19,7 +19,7 @@ Generating initial file
 ```
 tsc --init
 ```
-Simple Templates 
+Typescript Project Configuration
 ```
 {
   "compilerOptions": {
