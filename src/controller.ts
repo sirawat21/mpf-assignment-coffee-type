@@ -86,16 +86,47 @@ router.get('/recommendation', (req: Request, res: Response) => {
       // Yield coffee type that has 4 star up
       if (Number(min) > 3) return yieldObj;
    });
-   // Get the recommend lists; by finding the most star for each coffee type
-   const recommend = recentCoffeeTypeWithAcceptedRate.map((coffeeTypeObj) => {
-      // Set a list note that obj alread added for recommening
-      const recommendCoffeeTypeList: RatedCoffeeType[] = [];
 
-   });
-
-
-   if (recommend.length > 0) {
-
+   // Check 4+ star rate in the list 
+   if (recentCoffeeTypeWithAcceptedRate.length > 0) {
+      // Set a list note for collecting an obj that alread recommended
+      let recommendList: RatedCoffeeType[] = [];
+      // Get the recommend lists; by finding the most star for each coffee type
+      const recommend = recentCoffeeTypeWithAcceptedRate.map((coffeeTypeObj) => {
+         // Check obj must not be undefined
+         if (coffeeTypeObj) {
+            // Check, is coffeeTypeObj present in recommendList
+            // When recommendList is empty; then instantly add
+            if (recommendList.length === 0) {
+               recommendList.push(coffeeTypeObj);
+            } else {
+               // Check a spacific obj isn't in the list yet
+               const isPresentInTheList = recommendList.every(item => item.coffeeType !== coffeeTypeObj.coffeeType);
+               if (isPresentInTheList) {
+                  // If not present in list; then add it
+                  recommendList.push(coffeeTypeObj);
+               } else {
+                  // Find 4 start in recommendList for replacing with 5 star
+                     recommendList = recommendList.map((inListcoffeeTypeObj) => {
+                     // min, max from an obj in recommendList[]
+                     const [minPrevious, maxPrevious] = inListcoffeeTypeObj.starRating.split('/');
+                     // min, max from current passed obj from recentCoffeeTypeWithAcceptedRate[]
+                     const [minCurrent, maxCurrent] = coffeeTypeObj.starRating.split('/');
+                     // Match coffeeType of passed obj between recommendList[] and recentCoffeeTypeWithAcceptedRate[]
+                     if ((inListcoffeeTypeObj.coffeeType === coffeeTypeObj.coffeeType) &&
+                     // Compare min of obj in recommendList[] need to ledd than current passed obj; then replace it
+                     (minPrevious < minCurrent)
+                     ) {
+                        return coffeeTypeObj;
+                     }
+                  });
+               }
+            }
+         }
+      });
+      // Set recommendation lists
+      const detailResponseMessage = { ...recommend };
+      responseMessage.message = JSON.stringify(detailResponseMessage);
    } else {
       // When doesn't have any recommendation
       const detailResponseMessage = { message: 'NO_RECOMMENDATIONS_AVAILABLE' };
