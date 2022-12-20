@@ -4,9 +4,8 @@ const router = Router();
 
 /* -------------------- [*] Model [*] -------------------- */
 interface RatedCoffeeType {
-   id: number,
    coffeeType: string,
-   starRating: string,
+   starRating: string
 }
 // Model for storing rating of coffee type
 const model: RatedCoffeeType[] = [];
@@ -14,9 +13,9 @@ const model: RatedCoffeeType[] = [];
 /* ------------------ [*] Controllers [*] ------------------ */
 
 // [POST] - Creat a new rating coffee type 
-router.post('/ratings', (req: Request, res: Response) => {
+router.post('/ratings', (req: Request, res: Response): void => {
    let { coffeeType, starRating } = req.body;
-   // Set inital response message
+   // Set inital response
    let responseMessage = { code: 400, message: 'Bad Request' };
    // Validating the request
    if ('coffeeType' in req.body && 'starRating' in req.body) {
@@ -25,8 +24,6 @@ router.post('/ratings', (req: Request, res: Response) => {
       if (regex.test(starRating)) {
          // Valid request; then creating a new rated coffee type
          const ratedCoffeeType: RatedCoffeeType = {
-            // Set id for an item
-            id: (model.length > 0) ? model.slice(-1)[0].id + 1 : 1,
             coffeeType: coffeeType,
             starRating: starRating
          }
@@ -34,10 +31,9 @@ router.post('/ratings', (req: Request, res: Response) => {
          // Set response message
          responseMessage.code = 201;
          responseMessage.message = 'Created';
-         res.status(201).send(JSON.stringify(responseMessage));
       }
    }
-   res.status(201).send(responseMessage);
+   res.status(responseMessage.code).send(responseMessage);
 });
 
 // // [GET] - Get a message by id
@@ -48,8 +44,10 @@ router.post('/ratings', (req: Request, res: Response) => {
 
 // [GET] - List all rating coffee types 
 router.get('/ratings/coffee-types', (req: Request, res: Response) => {
-   const resource = model;
-   res.status(200).send(resource);
+   // Get unique object of RatedCoffeeType
+   const uniqueModelOfRatedCoffeeType = [... new Set(model)];
+
+   res.status(200).send(uniqueModelOfRatedCoffeeType);
 });
 
 
