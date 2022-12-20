@@ -53,12 +53,14 @@ router.get('/ratings', (req: Request, res: Response) => {
    // Check is array empty
    if (model.length > 0) {
       // Search for a coffeeType taht match with query param; reverse array to get the lastest obj
-      const previousRatedCoffeeType = model.reverse().find((ratedCoffeeType) => ratedCoffeeType.coffeeType ===  coffeeTypeQueryParam);
-      // When found match obj
+      const previousRatedCoffeeType = model.reverse().find((ratedCoffeeType) => ratedCoffeeType.coffeeType === coffeeTypeQueryParam);
+      // When query param is found
       if (previousRatedCoffeeType) {
          // Set response message
          responseMessage.code = 200;
-         responseMessage.message = '';
+         // Set spone message detail for not rating yet; coffeeType is from query param
+         const detailResponseMessage = {...previousRatedCoffeeType};
+         responseMessage.message = JSON.stringify(detailResponseMessage);
       }
    } else {
       // When query param is not found from model
