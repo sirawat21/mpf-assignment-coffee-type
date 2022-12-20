@@ -17,30 +17,27 @@ const model: RatedCoffeeType[] = [];
 router.post('/ratings', (req: Request, res: Response) => {
    let { coffeeType, starRating } = req.body;
    // Set inital response message
-   let responseMessage = { code: 0, message: '' };
-   // Validation
-   // Regular expression for starRating format
-   const regex = /^[1-5]\/[1-5]$/;
-   if (coffeeType in req.body && starRating in req.body && regex.test(starRating)) {
-      // Valid request
-      // Creating a new rated coffee type
-      const ratedCoffeeType: RatedCoffeeType = {
-         // Set id for an item
-         id: (model.length > 0) ? model.slice(-1)[0].id + 1 : 1,
-         coffeeType: coffeeType,
-         starRating: starRating
+   let responseMessage = { code: 400, message: 'Bad Request' };
+   // Validating the request
+   if ('coffeeType' in req.body && 'starRating' in req.body) {
+      // Regular expression for starRating format
+      const regex = /^[1-5]\/[1-5]$/;
+      if (regex.test(starRating)) {
+         // Valid request; then creating a new rated coffee type
+         const ratedCoffeeType: RatedCoffeeType = {
+            // Set id for an item
+            id: (model.length > 0) ? model.slice(-1)[0].id + 1 : 1,
+            coffeeType: coffeeType,
+            starRating: starRating
+         }
+         model.push(ratedCoffeeType);
+         // Set response message
+         responseMessage.code = 201;
+         responseMessage.message = 'Created';
+         res.status(201).send(JSON.stringify(responseMessage));
       }
-      model.push(ratedCoffeeType);
-      // Set response message
-      responseMessage.code = 201;
-      responseMessage.message = 'Created';
-      res.status(201).send(JSON.stringify(responseMessage));
-   } else {
-      // Invalid request
-      // Set response message
-      responseMessage.code = 400;
-      responseMessage.message = 'Baf Request';
    }
+   res.status(201).send(responseMessage);
 });
 
 // // [GET] - Get a message by id
