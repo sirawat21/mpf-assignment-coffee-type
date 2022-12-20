@@ -1,13 +1,13 @@
 import express from 'express';
-// import messageRouter from "./controller/message.controller";
+import controller from "./controller";
 
 /* API Config */
 const api = express();
-const port = 3030;
+const port = 3000;
 api.use(express.json());
 
 /* API Router */
-api.use('/ratings', () => {});
+api.use('/', controller);
 
 /* API Listening */
 api.listen(port, () => {
