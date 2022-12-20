@@ -39,7 +39,7 @@ router.post('/ratings', (req: Request, res: Response): void => {
 /* [GET] TASK 2  - Endpoint to list rated coffee types */
 router.get('/ratings/coffee-types', (req: Request, res: Response) => {
    // Get unique object of RatedCoffeeType
-   const uniqueModelOfRatedCoffeeType = [... new Set(model)]; // fix
+   const uniqueModelOfRatedCoffeeType = [... new Set(model)]; // [FIX] Still return all coffee type of the lists
 
    res.status(200).send(uniqueModelOfRatedCoffeeType);
 });
@@ -89,6 +89,7 @@ router.get('/recommendation', (req: Request, res: Response) => {
 
    // Check 4+ star rate in the list 
    if (recentCoffeeTypeWithAcceptedRate.length > 0) {
+      let resource = []; // [FIX] Type is not compatible when insert to detailResponseMessage
       // Set a list note for collecting an obj that alread recommended
       let recommendList: RatedCoffeeType[] = [];
       // Get the recommend lists; by finding the most star for each coffee type
@@ -107,15 +108,15 @@ router.get('/recommendation', (req: Request, res: Response) => {
                   recommendList.push(coffeeTypeObj);
                } else {
                   // Find 4 start in recommendList for replacing with 5 star
-                     recommendList = recommendList.map((inListcoffeeTypeObj) => {
+                  resource = recommendList.map((inListcoffeeTypeObj) => {
                      // min, max from an obj in recommendList[]
                      const [minPrevious, maxPrevious] = inListcoffeeTypeObj.starRating.split('/');
                      // min, max from current passed obj from recentCoffeeTypeWithAcceptedRate[]
                      const [minCurrent, maxCurrent] = coffeeTypeObj.starRating.split('/');
                      // Match coffeeType of passed obj between recommendList[] and recentCoffeeTypeWithAcceptedRate[]
                      if ((inListcoffeeTypeObj.coffeeType === coffeeTypeObj.coffeeType) &&
-                     // Compare min of obj in recommendList[] need to ledd than current passed obj; then replace it
-                     (minPrevious < minCurrent)
+                        // Compare min of obj in recommendList[] need to ledd than current passed obj; then replace it
+                        (minPrevious < minCurrent)
                      ) {
                         return coffeeTypeObj;
                      }
@@ -125,7 +126,7 @@ router.get('/recommendation', (req: Request, res: Response) => {
          }
       });
       // Set recommendation lists
-      const detailResponseMessage = { ...recommend };
+      const detailResponseMessage = {}; // [FIX] insert recommendation list
       responseMessage.message = JSON.stringify(detailResponseMessage);
    } else {
       // When doesn't have any recommendation
