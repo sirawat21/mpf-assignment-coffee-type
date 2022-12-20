@@ -16,6 +16,8 @@ const model: RatedCoffeeType[] = [];
 // [POST] - Creat a new rating coffee type 
 router.post('/ratings', (req: Request, res: Response) => {
    let { coffeeType, starRating } = req.body;
+   // Set inital response message
+   let responseMessage = {code: 0, message: ''};
    // creating a new rated coffee type
    const ratedCoffeeType: RatedCoffeeType = {
       // set id for item
@@ -26,7 +28,8 @@ router.post('/ratings', (req: Request, res: Response) => {
    model.push(ratedCoffeeType);
 
    // Set response
-   const responseMessage = { status: 'successed' };
+   responseMessage.code = 201;
+   responseMessage.message = 'Created';
    res.status(201).send(JSON.stringify(responseMessage));
 });
 
