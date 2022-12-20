@@ -12,7 +12,7 @@ const model: RatedCoffeeType[] = [];
 
 /* ------------------ [*] Controllers [*] ------------------ */
 
-// [POST] - Creat a new rating coffee type 
+// [POST] - Endpoint to rate coffee type
 router.post('/ratings', (req: Request, res: Response): void => {
    let { coffeeType, starRating } = req.body;
    // Set inital response
@@ -36,32 +36,7 @@ router.post('/ratings', (req: Request, res: Response): void => {
    res.status(responseMessage.code).send(responseMessage);
 });
 
-// [GET] - Get a message by coffee type
-router.get('/ratings', (req: Request, res: Response) => {
-   // Get query param of coffeeType
-   const coffeeType = req.query.coffeeType
-   // Set inital response
-   let responseMessage = { code: 400, message: '' };
-   // Validating the request
-   if (model.length > 0) {
-      // Get previous rated coffee type; access from the tail of array model
-      const previousRatedCoffeeType = model.slice(-1)[0];
-      // Check the matched value of coffee type between model and query param
-      if (coffeeType === previousRatedCoffeeType.coffeeType) {
-         // Set response message
-         responseMessage.code = 200;
-         responseMessage.message = '';
-      }
-   } else {
-      // When query param is not found from model
-      // Set spone message detail for not rating yet; coffeeType is from query param
-      const detailResponseMessage = { coffeeType: `${coffeeType} is not rated yet coffee type` };
-      responseMessage.message = JSON.stringify(detailResponseMessage);
-   }
-   res.status(responseMessage.code).send(responseMessage.message);
-});
-
-// [GET] - List all rating coffee types 
+// [GET] - Endpoint to list rated coffee types
 router.get('/ratings/coffee-types', (req: Request, res: Response) => {
    // Get unique object of RatedCoffeeType
    const uniqueModelOfRatedCoffeeType = [... new Set(model)];
@@ -69,8 +44,34 @@ router.get('/ratings/coffee-types', (req: Request, res: Response) => {
    res.status(200).send(uniqueModelOfRatedCoffeeType);
 });
 
+// [GET] - Endpoint to obtain rating of previously rated coffee type
+router.get('/ratings', (req: Request, res: Response) => {
+   // Get query param of coffeeType
+   const coffeeTypeQueryParam = req.query.coffeeType
+   // Set inital response
+   let responseMessage = { code: 400, message: '' };
+   // Check is array empty
+   if (model.length > 0) {
+      // Search for a coffeeType taht match with query param; reverse array to get the lastest obj
+      const previousRatedCoffeeType = model.reverse().find((ratedCoffeeType) => ratedCoffeeType.coffeeType ===  coffeeTypeQueryParam);
+      // When found match obj
+      if (previousRatedCoffeeType) {
+         // Set response message
+         responseMessage.code = 200;
+         responseMessage.message = '';
+      }
+   } else {
+      // When query param is not found from model
+      // Set spone message detail for not rating yet; coffeeType is from query param
+      const detailResponseMessage = { coffeeType: `${coffeeTypeQueryParam} is not rated yet coffee type` };
+      responseMessage.message = JSON.stringify(detailResponseMessage);
+   }
+   res.status(responseMessage.code).send(responseMessage.message);
+});
 
-// // [GET] - Recommendation
+
+
+// // [GET] Endpoint to recommend a coffee type for today
 // router.get('/recommendation', (req: Request, res: Response) => {
 //    res.status(200).send('');
 // });
