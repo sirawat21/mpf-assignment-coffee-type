@@ -12,7 +12,7 @@ const model: RatedCoffeeType[] = [];
 
 /* ------------------ [*] Controllers [*] ------------------ */
 
-// [POST] - Endpoint to rate coffee type
+/* [POST] TASK 1  - Endpoint to rate coffee type */
 router.post('/ratings', (req: Request, res: Response): void => {
    let { coffeeType, starRating } = req.body;
    // Set inital response
@@ -36,7 +36,7 @@ router.post('/ratings', (req: Request, res: Response): void => {
    res.status(responseMessage.code).send(responseMessage);
 });
 
-// [GET] - Endpoint to list rated coffee types
+/* [GET] TASK 2  - Endpoint to list rated coffee types */
 router.get('/ratings/coffee-types', (req: Request, res: Response) => {
    // Get unique object of RatedCoffeeType
    const uniqueModelOfRatedCoffeeType = [... new Set(model)];
@@ -44,7 +44,7 @@ router.get('/ratings/coffee-types', (req: Request, res: Response) => {
    res.status(200).send(uniqueModelOfRatedCoffeeType);
 });
 
-// [GET] - Endpoint to obtain rating of previously rated coffee type
+/* [GET] TASK 3  - Endpoint to obtain rating of previously rated coffee type */
 router.get('/ratings', (req: Request, res: Response) => {
    // Get query param of coffeeType
    const coffeeTypeQueryParam = req.query.coffeeType
@@ -65,17 +65,16 @@ router.get('/ratings', (req: Request, res: Response) => {
    } else {
       // When query param is not found from model
       // Set spone message detail for not rating yet; coffeeType is from query param
-      const detailResponseMessage = { coffeeType: `${coffeeTypeQueryParam} is not rated yet coffee type` };
+      const detailResponseMessage = { coffeeType: `${coffeeTypeQueryParam} is not rated yet coffee type.` };
       responseMessage.message = JSON.stringify(detailResponseMessage);
    }
    res.status(responseMessage.code).send(responseMessage.message);
 });
 
 
-
-// // [GET] Endpoint to recommend a coffee type for today
-// router.get('/recommendation', (req: Request, res: Response) => {
-//    res.status(200).send('');
-// });
+/* [GET] TASK 4 - Endpoint to recommend a coffee type for today */
+router.get('/recommendation', (req: Request, res: Response) => {
+   res.status(200).send('');
+});
 
 export default router;
