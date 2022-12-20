@@ -4,23 +4,15 @@
 Demostrating REST API assignment from by MPF
 Dependency
 ```
-npm install typescript ts-node@10.9.1 express nodemon
-npm install --save @types/express
+npm install typescript ts-node@10.9.1 express @types/express nodemon
 ```
-Compile & Execute
-```
-tsc [file]
-tsc --project tsconfig.json
-
-npx ts-node [file]
-```
-Build
-```
-npm run build
-```
-Run project with monitoring
+Run project
 ```
 npm start
+```
+Build Project yeild Jsscript
+```
+npm run build
 ```
 ## Configuration
 Generating initial file
